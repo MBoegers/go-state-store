@@ -1,4 +1,4 @@
-package storage
+package datastore
 
 import (
 	"errors"
@@ -7,7 +7,13 @@ import (
 )
 
 // Storage simply wraps around a the go-cache library of Patrick Mylund Nielsen, see https://github.com/patrickmn
-var internalCache = cache.New(cache.DefaultExpiration, cache.DefaultExpiration)
+var internalCache *cache.Cache
+var updates chan string
+
+func Init(updatesChan chan string) {
+	updates = updatesChan
+	internalCache = cache.New(cache.DefaultExpiration, cache.DefaultExpiration)
+}
 
 //region<Interaction>
 // Set a a values, note that value nil is not allowed
@@ -16,12 +22,17 @@ func Set(key string, value interface{}) error {
 		return errors.New("Value should not be null. For deletion use Remove")
 	}
 	internalCache.Set(key, value, cache.NoExpiration)
+	updates <- key
 	return nil
 }
 
-// removes a value from the storage, an error indicates the absend of the value
+// removes a value from the datastore, an error indicates the absend of the value
 func Remove(key string) error {
-	return internalCache.Replace(key, nil, time.Microsecond*1) // use instant invalidation for removal
+	var err = internalCache.Replace(key, nil, time.Microsecond*1) // use instant invalidation for removal
+	if err == nil {
+		updates <- key
+	}
+	return err
 }
 
 // read a value form the store, could be nil
