@@ -1,9 +1,9 @@
 package main
 
 import (
-	"go-state-publisher/controller"
-	"go-state-publisher/datastore"
-	"go-state-publisher/eventcache"
+	"github.com/MBoegers/go-state-store/controller"
+	"github.com/MBoegers/go-state-store/datastore"
+	"github.com/MBoegers/go-state-store/eventcache"
 	"sync"
 	"time"
 )

@@ -3,10 +3,10 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/MBoegers/go-state-store/datastore"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
-	"go-state-publisher/datastore"
 	"net/http"
 	"sync"
 )

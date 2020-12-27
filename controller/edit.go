@@ -3,8 +3,8 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/MBoegers/go-state-store/datastore"
 	"github.com/gorilla/mux"
-	"go-state-publisher/datastore"
 	"net/http"
 	"sync"
 )
