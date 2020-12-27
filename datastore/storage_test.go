@@ -97,14 +97,14 @@ func TestGet(t *testing.T) {
 }
 
 func getEmpty(t *testing.T) {
-	var actual = Get("testGet")
+	var actual = Get("testGetEmpty")
 	if actual != nil {
 		t.Errorf("should read nil on empty store")
 	}
 }
 
 func getNotSet(t *testing.T) {
-	var key = "testGet"
+	var key = "testGetNotSet"
 	var otherKey = "otherTestGet"
 	var value = "value"
 	Set(key, value)
@@ -115,7 +115,7 @@ func getNotSet(t *testing.T) {
 }
 
 func getString(t *testing.T) {
-	var key = "testGet"
+	var key = "testGetString"
 	var value = "value"
 	Set(key, value)
 	var expected = Get(key)

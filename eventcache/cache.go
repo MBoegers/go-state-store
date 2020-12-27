@@ -44,11 +44,12 @@ func addEvent(event string) {
 func sendEvents() {
 	eventLock.Lock()
 	defer eventLock.Unlock()
-
-	var payload = make([]string, len(eventQueue))
-	copy(payload, eventQueue)
-	eventQueue = make([]string, 0)
-	notifyChan <- payload
+	if len(eventQueue) != 0 {
+		var payload = make([]string, len(eventQueue))
+		copy(payload, eventQueue)
+		eventQueue = make([]string, 0)
+		notifyChan <- payload
+	}
 }
 
 //endregion
