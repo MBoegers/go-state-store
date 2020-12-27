@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GSP-Debug</title>
+</head>
+<body>
+<div id="statesLog">
+</div>
+<div id="changes"></div>
+<script>
+    const stateLog = document.getElementById("statesLog")
+    const changes = document.getElementById("changes")
+
+    stateLog.innerText = "begin"
+
+    let handleNewData = msg => {
+        stateLog.innerText += ",msg"
+        var newData = JSON.parse(msg.data)
+            .map(k => {
+                let xmlHttp = new XMLHttpRequest();
+                let url = "http://127.0.0.1:8080/get/".concat(k)
+                xmlHttp.open("GET", url, false); // false for synchronous request
+                xmlHttp.send(null);
+                return "\t".concat(k, ": ", JSON.parse(xmlHttp.responseText), ",\n")
+            })
+            .reduce((acc, cur) => acc + cur, "Changed values: \n")
+        console.log(newData)
+    }
+
+    let socket = new WebSocket("ws://127.0.0.1:8080/updates")
+    socket.onopen = _ => stateLog.innerText += ",connected"
+    socket.onclose = _ => stateLog.innerText += ",closed"
+    socket.onmessage = handleNewData
+    socket.onerror = e => {
+        stateLog.innerText += ",error"
+        console.error(e)
+    }
+</script>
+</body>
+</html>
