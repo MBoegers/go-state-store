@@ -1,4 +1,4 @@
 /.idea
-/go-state-store_linux_amd64
-/go-state-store_linux_arm
-/go-state-store
+/target
+*.key
+*.pub
