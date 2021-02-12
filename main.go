@@ -20,7 +20,7 @@ func main() {
 		log.Fatal(err)
 		os.Exit(1)
 	}
-	var config *configuration.Config
+	var config *configuration.ConfigFile
 	config, err = configuration.ReadConfig(configPath)
 	if err != nil {
 		log.Fatal(err)
@@ -38,8 +38,11 @@ func main() {
 	// spawn  servers
 	var wg = new(sync.WaitGroup)
 	wg.Add(2)
+	var env = configuration.ReadEnv()
+
 	go controller.SpawnEditCtl(config.Edit.Host, config.Edit.Port, wg)
-	go controller.InitReadCtl(config.Read.Host, config.Read.Port, publishChannel, wg)
+	go controller.InitReadCtl(config.Read.Host, config.Read.Port,
+		env.Cert, env.Key, publishChannel, wg)
 	wg.Wait()
 }
 
@@ -57,7 +60,7 @@ func readConfigPath() (string, error) {
 	// Validate the path first
 	// ValidateConfigPath just makes sure, that the path provided is a file,
 	// that can be read
-	s, err := os.Stat(configPath)
+	var s, err = os.Stat(configPath)
 	if err != nil {
 		return configPath, err
 	}

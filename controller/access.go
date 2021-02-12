@@ -14,7 +14,8 @@ import (
 var connections []*websocket.Conn
 var updatesChan chan []string
 
-func InitReadCtl(host string, port int, updates chan []string, wg *sync.WaitGroup) {
+func InitReadCtl(host string, port int,
+	certPath string, keyPath string, updates chan []string, wg *sync.WaitGroup) {
 	var router = mux.NewRouter()
 	updatesChan = updates
 
@@ -34,7 +35,7 @@ func InitReadCtl(host string, port int, updates chan []string, wg *sync.WaitGrou
 
 	go handleUpdateEvent()
 
-	var err = server.ListenAndServe()
+	var err = server.ListenAndServeTLS(certPath, keyPath)
 	if err != nil {
 		fmt.Errorf(err.Error(), "Error in access controller")
 	}
