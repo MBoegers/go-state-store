@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type Config struct {
+type ConfigFile struct {
 	Edit struct {
 		Host string `yaml:"host"`
 		Port int    `yaml:"port"`
@@ -25,13 +25,25 @@ type Config struct {
 	} `yaml:"event"`
 }
 
-// NewConfig returns a new decoded Config struct
-func ReadConfig(configPath string) (*Config, error) {
+type EnvConfig struct {
+	Cert string
+	Key  string
+}
+
+func ReadEnv() *EnvConfig {
+	var envConf = &EnvConfig{}
+	envConf.Cert = os.Getenv("state-store.cert-path")
+	envConf.Key = os.Getenv("state-store.key-path")
+	return envConf
+}
+
+// NewConfig returns a new decoded ConfigFile struct
+func ReadConfig(configPath string) (*ConfigFile, error) {
 	// Create config structure
-	config := &Config{}
+	var config = &ConfigFile{}
 
 	// Open config file
-	file, err := os.Open(configPath)
+	var file, err = os.Open(configPath)
 	if err != nil {
 		return nil, err
 	}
