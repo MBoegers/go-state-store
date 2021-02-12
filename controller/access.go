@@ -28,7 +28,7 @@ func InitReadCtl(host string, port int,
 	methodsOk := handlers.AllowedMethods([]string{"GET"})
 
 	var server = http.Server{
-		Addr:    fmt.Sprint(host, ":", port),
+		Addr:    fmt.Sprint("https://", host, ":", port),
 		Handler: handlers.CORS(headersOk, originsOk, methodsOk)(router),
 		//Handler: router,
 	}
