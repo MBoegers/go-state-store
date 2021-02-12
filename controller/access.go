@@ -14,7 +14,7 @@ import (
 var connections []*websocket.Conn
 var updatesChan chan []string
 
-func InitReadCtl(port int, updates chan []string, wg *sync.WaitGroup) {
+func InitReadCtl(host string, port int, updates chan []string, wg *sync.WaitGroup) {
 	var router = mux.NewRouter()
 	updatesChan = updates
 
@@ -27,12 +27,13 @@ func InitReadCtl(port int, updates chan []string, wg *sync.WaitGroup) {
 	methodsOk := handlers.AllowedMethods([]string{"GET"})
 
 	var server = http.Server{
-		Addr:    fmt.Sprint(":", port),
+		Addr:    fmt.Sprint(host, ":", port),
 		Handler: handlers.CORS(headersOk, originsOk, methodsOk)(router),
 		//Handler: router,
 	}
 
 	go handleUpdateEvent()
+
 	var err = server.ListenAndServe()
 	if err != nil {
 		fmt.Errorf(err.Error(), "Error in access controller")
